@@ -38,6 +38,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
     labels:
       traefik.enable: true
-
   front:
     image: "vtcs2304s19/blabber-client"
+    ports: 
+      - "5000:5000"

@@ -7,19 +7,7 @@ module.exports = app => {
     const params = req.query;
     const timestamp = params.createdSince;
 
-    //parse the mongo db to get all time stamp
-
-    // res.status(200).send([
-    //   {
-    //     id: "string",
-    //     postTime: 0,
-    //     author: {
-    //       email: "user@example.com",
-    //       name: "string"
-    //     },
-    //     message: "string"
-    //   }
-    // ]);
+    //parse the mongo db to get all time stam
 
     res.status(200).send(blabs);
   });
@@ -49,6 +37,8 @@ module.exports = app => {
     const params = req.query;
     const author = params.author;
     const message = params.message;
+
+    console.log(req)
 
     //put in database
 
