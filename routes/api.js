@@ -1,5 +1,3 @@
-const _ = require("lodash");
-
 var ids = 0;
 
 const blabs = [];
@@ -29,21 +27,21 @@ module.exports = app => {
   app.delete("/blabs/:id", (req, res) => {
     const id = req.params.id;
 
-    if (
-      _.findIndex(blabs, function(o) {
-        return o.id == id;
-      })
-    ) {
-      _.remove(blabs, function(n) {
-        return n.id == id;
-      });
+    var actual_blab = null;
+    var index = -1;
+    for (let i = 0; i < blabs.length; i++) {
+      var blab = blabs[i];
+      if (blab.id == id) {
+        actual_blab = blab;
+        index = i;
+      }
+    }
+    if (actual_blab != null) {
+      blabs.remove(index);
       res.status(200).send("Blab deleted successfully");
     } else {
       res.status(404).send("Blab does not exist");
     }
-
-    //if id is not
-    //
   });
 
   app.post("/blabs", (req, res) => {
