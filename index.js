@@ -5,10 +5,10 @@ require("./routes/api")(app);
 
 
 app.get("/", (req, res) => {
-    res.send("Blabber Thingy")
+    res.send("ihy sammy Thingy")
 })
 
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log("App Listening to PORT " + PORT);
-})
+}) 

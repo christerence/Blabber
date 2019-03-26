@@ -1,0 +1,28 @@
+version: '3.1'
+
+services:
+  reverse-proxy:
+    image: traefik # The official Traefik docker image
+    command: --api --docker # Enables the web UI and tells Traefik to listen to docker
+    ports:
+      - "80:80"     # The HTTP port
+      - "8080:8080" # The Web UI (enabled by --api)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+  node:
+    build: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    environment:
+      - NODE_ENV=development
+    ports: 
+      - '3000:3000'
+    command: "npm run start"
+    labels:
+      - "traefik.frontend.rule=Host:blabber.docker.localhost"
+      - "traefik.frontend.rule=ReplacePathRegex: ^/api/(.*)?$$ /"
+    
+    
+    
