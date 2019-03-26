@@ -55,8 +55,11 @@ module.exports = app => {
     const new_post = {
       id: ids,
       postTime: new Date().getTime(),
-      author: author,
-      message: message
+      author: {
+        email: "user@example.com",
+        name: "string"
+      },
+      message: "HELLO"
     };
 
     blabs.push(new_post);
