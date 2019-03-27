@@ -36,9 +36,12 @@ services:
   
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
-    labels:
-      traefik.enable: true
+
   front:
     image: "vtcs2304s19/blabber-client"
-    ports: 
-      - "5000:5000"
+    # ports: 
+    #   - "80:80"
+    labels:
+      traefik.backend: "blabber"
+      # traefik.frontend.rule: "Host: app.docker.localhost"
+      # traefik.frontend.rule: "ReplacePathRegex: ^/api/blabs(?:/(.*))?$$ /blabs/$${1}"
