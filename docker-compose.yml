@@ -1,47 +1,37 @@
 version: '3.7'
 
 services:
-  blabber:
+
+  reverse-proxy:
+    image: traefik
+    command: --api --docker
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  api:
     build: .
-    # networks:
-    #   - web
     volumes:
       - .:/app
       - /app/node_modules
     working_dir: /app
     environment:
       - NODE_ENV=development
-    ports: 
-      - '3000:3000'
     command: "npm run start"
-    labels:
-      traefik.frontend.rule: "Host: app.docker.localhost"
-      traefik.frontend.rule: "ReplacePathRegex: ^/api/blabs(?:/(.*))?$$ /blabs/$${1}"
-      # traefik.frontend.rule: "PathPrefixStrip:/api"
-      # traefik.backend: "blabber"
-      # traefik.enable: true
-      # traefik.docker.network: "web"
-      # traefik.port: "80"
-      
-      # traefik.frontend.redirect.regex: "^/api/blabs(?:/(.*))?$$"
-      # traefik.frontend.redirect.replacement: "/blabs/$${1}"
-      #traefik.frontend.rule: "ReplacePathRegex: ^/api/(.*)?$$ /"
-      
-  reverse-proxy:
-    image: traefik # The official Traefik docker image
-    command: --api --docker # Enables the web UI and tells Traefik to listen to docker
     ports:
-      - "80:80"
-      - "8080:8080" # The Web UI (enabled by --api)
-  
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+      - "3000:3000"
+    labels:
+      traefik.backend: "api"
+      traefik.frontend.rule: "PathPrefix:/api"
+      traefik.port: "3000"
+      traefik.frontend.rule: "PathPrefixStrip:/api"
 
   front:
-    image: "vtcs2304s19/blabber-client"
-    # ports: 
-    #   - "80:80"
+    image: vtcs2304s19/blabber-client
     labels:
-      traefik.backend: "blabber"
-      # traefik.frontend.rule: "Host: app.docker.localhost"
-      # traefik.frontend.rule: "ReplacePathRegex: ^/api/blabs(?:/(.*))?$$ /blabs/$${1}"
+      traefik.backend: "front"
+      traefik.port: "80"
+      traefik.frontend.rule: "Host:front.docker.localhost"
+      traefik.frontend.rule: "PathPrefix:/"

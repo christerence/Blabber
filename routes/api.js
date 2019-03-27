@@ -6,9 +6,6 @@ module.exports = app => {
   app.get("/blabs", (req, res) => {
     const params = req.query;
     const timestamp = params.createdSince;
-
-    //parse the mongo db to get all time stam
-
     res.status(200).send(blabs);
   });
 
@@ -34,22 +31,14 @@ module.exports = app => {
 
   app.post("/blabs", (req, res) => {
     ids++;
-    const params = req.query;
+    const params = req.body;
     const author = params.author;
     const message = params.message;
-
-    console.log(req)
-
-    //put in database
-
     const new_post = {
       id: ids,
-      postTime: new Date().getTime(),
-      author: {
-        email: "user@example.com",
-        name: "string"
-      },
-      message: "HELLO"
+      postTime: process.uptime(),
+      author,
+      message,
     };
 
     blabs.push(new_post);
