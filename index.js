@@ -1,6 +1,26 @@
 const express = require("express");
 const app = express();
-var bodyParser = require("body-parser");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+require("./models/blabs");
+
+mongoose.connect("mongodb://mongo:27017", (err) => {
+  if (err) {
+      console.log("DB failed");
+    } else {
+      console.log("connected");
+    }
+});
+
+//const client = mongodb.MongoClient;
+
+// client.connect("mongodb://mongo:27017", (err, db) => {
+//   if (err) {
+//     console.log("DB failed");
+//   } else {
+//     console.log("connected");
+//   }
+// });
 
 app.use(bodyParser.json());
 app.use(
