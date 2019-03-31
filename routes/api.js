@@ -16,13 +16,18 @@ module.exports = app => {
 
   app.delete("/blabs/:id", (req, res) => {
     const id = req.params.id;
-    Blab.remove({id: id}, (err) => {
-      if(err) {
-        res.status(404).send("Blab not found")
-      } else {
-        res.status(200).send("Blab deleted successfully")
-      }
-    })
+    Blab.find({})
+      .where("id")
+      .equals(id)
+      .then(blabs => {
+        if (blabs.length == 0) {
+          res.status(404).send("Blab not found");
+        } else {
+          Blab.remove({ id: id }, err => {
+            res.status(200).send("Blab deleted successfully");
+          });
+        }
+      });
   });
 
   app.post("/blabs", (req, res) => {
