@@ -44,6 +44,8 @@ services:
 
   tests:
     image: vtcs2304s19/blabber-api-tests
+    depends_on:
+      - mongo
     environment:
       SERVICE_NAME: api
       API_PORT: "3000"
