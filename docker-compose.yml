@@ -41,13 +41,15 @@ services:
       traefik.port: "80"
       traefik.frontend.rule: "Host:front.docker.localhost"
       traefik.frontend.rule: "PathPrefix:/"
-
+  
   tests:
     image: vtcs2304s19/blabber-api-tests
     environment:
       SERVICE_NAME: api
       API_PORT: "3000"
-      SLEEP_LENGTH: 3
+      SLEEP_TIMER: 20
+    depends_on:
+      - api
 
 
 volumes:
