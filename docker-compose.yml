@@ -22,9 +22,12 @@ services:
     build: ./
     volumes:
       - .:/app
+    depends_on:
+      - mongo
     working_dir: /app
     environment:
-      - NODE_ENV=development
+      NODE_ENV: development
+      WAIT_HOSTS: mongo:27017
     command: "npm run start"
     ports:
       - "3000:3000"
@@ -47,7 +50,8 @@ services:
     environment:
       SERVICE_NAME: api
       API_PORT: "3000"
-      SLEEP_TIMER: 20
+      SLEEP_TIMER: 5000
+      WAIT_HOSTS: mongo:27017
     depends_on:
       - api
 
