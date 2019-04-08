@@ -25,7 +25,7 @@ services:
         constraints: [node.role == manager]
 
   api:
-    image: christerence/blabber-api:latest
+    image: christerence/blabber-api
     volumes:
       - .:/app
     depends_on:
@@ -56,6 +56,19 @@ services:
       traefik.frontend.rule: "PathPrefix:/"
     deploy:
       replicas: 2
+      restart_policy:
+        condition: on-failure
+
+
+  visualizer:
+    image: mikesir87/swarm-viz
+    ports:
+      - "5000:3000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints: [node.role == manager]
       restart_policy:
         condition: on-failure
 
