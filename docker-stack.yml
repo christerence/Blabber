@@ -30,10 +30,7 @@ services:
       - .:/app
     depends_on:
       - mongo
-    working_dir: /app
-    environment:
-      NODE_ENV: development
-      WAIT_HOSTS: mongo:27017
+    working_dir: /usr/src/app
     command: "npm run start"
     ports:
       - "3000:3000"
