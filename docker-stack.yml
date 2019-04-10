@@ -8,11 +8,14 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    networks:
+      - proxy-net
     deploy:
       labels:
         traefik.backend: "front"
         traefik.port: "27017"
         traefik.frontend.rule: "PathPrefix:/"
+        traefik.docker.network: "proxy-net"
       restart_policy: 
         condition: on-failure
     
@@ -22,11 +25,15 @@ services:
     ports:
       - "80:80"
       - "8080:8080"
+    networks:
+      - proxy-net
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
       placement:
         constraints: [node.role == manager]
+      labels:
+        traefik.docker.network: "proxy-net"
 
   api:
     image: christerence/blabber-api
@@ -34,6 +41,8 @@ services:
       - .:/app
     depends_on:
       - mongo
+    networks:
+      - proxy-net
     working_dir: /usr/src/app
     command: "npm run start"
     ports:
@@ -45,11 +54,14 @@ services:
         traefik.frontend.rule: "PathPrefix:/api"
         traefik.port: "3000"
         traefik.frontend.rule: "PathPrefixStrip:/api"
+        traefik.docker.network: "proxy-net"
       restart_policy:
         condition: on-failure
 
   front:
     image: vtcs2304s19/blabber-client
+    networks:
+      - proxy-net
     deploy:
       replicas: 2
       restart_policy:
@@ -58,6 +70,7 @@ services:
         traefik.backend: "front"
         traefik.port: "80"
         traefik.frontend.rule: "PathPrefix:/"
+        traefik.docker.network: "proxy-net"
 
 
   visualizer:
@@ -78,4 +91,5 @@ volumes:
 
 networks:
   proxy-net:
+    name: "proxy-net"
     driver: overlay
