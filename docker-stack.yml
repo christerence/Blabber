@@ -9,12 +9,16 @@ services:
     volumes:
       - mongo-data:/data/db
     deploy:
+      labels:
+        traefik.backend: "front"
+        traefik.port: "27017"
+        traefik.frontend.rule: "PathPrefix:/"
       restart_policy: 
         condition: on-failure
     
   reverse-proxy:
     image: traefik
-    command: --api --docker
+    command: --api --docker --docker.swarmMode
     ports:
       - "80:80"
       - "8080:8080"
@@ -34,27 +38,26 @@ services:
     command: "npm run start"
     ports:
       - "3000:3000"
-    labels:
-      traefik.backend: "api"
-      traefik.frontend.rule: "PathPrefix:/api"
-      traefik.port: "3000"
-      traefik.frontend.rule: "PathPrefixStrip:/api"
     deploy:
       replicas: 2
+      labels:
+        traefik.backend: "api"
+        traefik.frontend.rule: "PathPrefix:/api"
+        traefik.port: "3000"
+        traefik.frontend.rule: "PathPrefixStrip:/api"
       restart_policy:
         condition: on-failure
 
   front:
     image: vtcs2304s19/blabber-client
-    labels:
-      traefik.backend: "front"
-      traefik.port: "80"
-      traefik.frontend.rule: "Host:front.docker.localhost"
-      traefik.frontend.rule: "PathPrefix:/"
     deploy:
       replicas: 2
       restart_policy:
         condition: on-failure
+      labels:
+        traefik.backend: "front"
+        traefik.port: "80"
+        traefik.frontend.rule: "PathPrefix:/"
 
 
   visualizer:
@@ -71,3 +74,8 @@ services:
 
 volumes:
  mongo-data:
+
+
+networks:
+  proxy-net:
+    driver: overlay
