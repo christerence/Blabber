@@ -17,6 +17,7 @@ services:
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    read_only: true
 
   api:
     build: ./
@@ -24,6 +25,7 @@ services:
       - .:/app
     depends_on:
       - mongo
+    read_only: true
     working_dir: /app
     environment:
       NODE_ENV: development
@@ -39,6 +41,7 @@ services:
 
   front:
     image: vtcs2304s19/blabber-client
+    read_only: true
     labels:
       traefik.backend: "front"
       traefik.port: "80"
