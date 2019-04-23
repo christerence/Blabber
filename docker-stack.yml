@@ -22,7 +22,6 @@ services:
   reverse-proxy:
     image: traefik
     command: --api --docker --docker.swarmMode
-    read_only: true
     ports:
       - "80:80"
       - "8080:8080"
@@ -62,7 +61,6 @@ services:
 
   front:
     image: vtcs2304s19/blabber-client
-    read_only: true
     networks:
       - proxy-net
     deploy:
