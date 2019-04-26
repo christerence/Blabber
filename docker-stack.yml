@@ -11,7 +11,7 @@ services:
     networks:
       - proxy-net
     environment:
-      MONGO_PASSWORD_FILE: /run/secrets/db_password
+      PWD: /run/secrets/db_password
     secrets:
       - db_password
     deploy:
