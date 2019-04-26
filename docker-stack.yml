@@ -10,10 +10,10 @@ services:
       - mongo-data:/data/db
     networks:
       - proxy-net
-    environment:
-      PWD: /run/secrets/db_password
-    secrets:
-      - db_password
+    # environment:
+    #   PWD: /run/secrets/db_password
+    # secrets:
+    #   - db_password
     deploy:
       labels:
         traefik.backend: "front"
@@ -49,15 +49,15 @@ services:
     networks:
       - proxy-net
     working_dir: /usr/src/app
-    environment:
-      API_MONGO_HOST: mongo:27017
-      API_MONGO_USER: user
-      API_MONGO_PASSWORD_FILE: /run/secrets/db_password
+    # environment:
+    #   API_MONGO_HOST: mongo:27017
+    #   API_MONGO_USER: user
+    #   API_MONGO_PASSWORD_FILE: /run/secrets/db_password
     command: "npm run start"
     ports:
       - "3000:3000"
-    secrets:
-      - db_password
+    # secrets:
+    #   - db_password
     deploy:
       replicas: 2
       labels:
@@ -99,9 +99,9 @@ services:
 volumes:
  mongo-data:
 
-secrets:
-  db_password:
-    file: ./db_password.txt
+# secrets:
+#   db_password:
+#     file: ./db_password.txt
 
 networks:
   proxy-net:

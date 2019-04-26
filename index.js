@@ -6,13 +6,13 @@ var fs = require("fs");
 
 require("./models/blabs");
 
-var mongoUser = "user";
-var mongoPass = fs
-  .readFileSync("./db_password.txt")
-  .toString()
-  .split("\n")[0];
+// var mongoUser = "user";
+// var mongoPass = fs
+//   .readFileSync("./db_password.txt")
+//   .toString()
+//   .split("\n")[0];
 
-mongoose.connect(`mongodb://${encodeURIComponent(mongoUser)}:${encodeURIComponent(mongoPass)}@mongo:27017`, err => {
+mongoose.connect(`mongodb://mongo:27017`, err => {
   if (err) {
     console.log(err);
     console.log("DB failed");
