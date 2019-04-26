@@ -2,23 +2,22 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-var fs = require("fs");
-
 require("./models/blabs");
 
-// var mongoUser = "user";
-// var mongoPass = fs
-//   .readFileSync("./db_password.txt")
-//   .toString()
-//   .split("\n")[0];
+const user = process.env.API_MONGO_USER;
+const pass = fs
+.readFileSync(process.env.API_MONGO_PASSWORD_FILE)
+.toString()
+.split("\n")[0];
 
-mongoose.connect(`mongodb://mongo:27017`, err => {
+const uri = encodeURI(`mongodb://${user}:${pass}@mongo:27017`);
+
+mongoose.connect(uri, (err) => {
   if (err) {
-    console.log(err);
-    console.log("DB failed");
-  } else {
-    console.log("connected");
-  }
+      console.log("DB failed");
+    } else {
+      console.log("connected");
+    }
 });
 
 app.use(bodyParser.json());
