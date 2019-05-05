@@ -1,6 +1,23 @@
 version: '3.7'
 
 services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    networks:
+      - proxy-net
+    volumes:
+      - prometheus_data:/prometheus
+    depends_on:
+      - api
+    command:
+      - '--config.file=./prometheus.yml'
+    restart: always
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
 
   mongo:
     image: mongo
@@ -98,6 +115,7 @@ services:
 
 volumes:
  mongo-data:
+ prometheus_data:
 
 secrets:
   db_password:
