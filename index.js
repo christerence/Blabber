@@ -2,23 +2,20 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const fs = require("fs");
 require("./models/blabs");
 
 const user = process.env.API_MONGO_USER;
 const pass = fs
-.readFileSync(process.env.API_MONGO_PASSWORD_FILE)
-.toString()
-.split("\n")[0];
+  .readFileSync(process.env.API_MONGO_PASSWORD_FILE)
+  .toString()
+  .split("\n")[0];
 
-const uri = encodeURI(`mongodb://${user}:${pass}@mongo:27017`);
+console.log("username: " + user + " password: " + pass);
 
-mongoose.connect(uri, (err) => {
-  if (err) {
-      console.log("DB failed");
-    } else {
-      console.log("connected");
-    }
-});
+const uri = encodeURI(`mongodb://${user}:${pass}@mongo:27017/admin`);
+
+console.log(uri);
 
 app.use(bodyParser.json());
 app.use(
@@ -29,7 +26,24 @@ app.use(
 
 require("./routes/api")(app);
 
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log("App Listening to PORT " + PORT);
+app.get("/healthcheck", (req, res) => {
+  res.sendStatus(200);
 });
+
+const options = {
+  useNewUrlParser: true
+};
+
+mongoose.connect(uri, options, err => {
+  if (err) {
+    console.log("DB failed");
+  } else {
+    console.log("connected");
+    const PORT = 3000 || process.env.PORT;
+    app.listen(PORT, () => {
+      console.log("App Listening to PORT " + PORT);
+    });
+  }
+});
+
+

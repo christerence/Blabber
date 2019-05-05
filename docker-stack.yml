@@ -11,8 +11,8 @@ services:
     networks:
       - proxy-net
     environment:
-      USR: user
-      PWD: /run/secrets/db_password
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=ilovedocker
     secrets:
       - db_password
     deploy:
@@ -51,13 +51,8 @@ services:
       - proxy-net
     working_dir: /usr/src/app
     environment:
-      API_MONGO_USER: user
+      API_MONGO_USER: "user"
       API_MONGO_PASSWORD_FILE: /run/secrets/db_password
-    # healthcheck:
-    #   test: curl --silent --fail localhost:3000/healthcheck || exit 1
-    #   interval: 15s
-    #   timeout: 3s
-    #   retries: 3
     command: "npm run start"
     ports:
       - "3000:3000"
