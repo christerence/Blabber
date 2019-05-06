@@ -22,7 +22,6 @@ services:
       placement:
         constraints:
           - node.role==manager
-          # - node.hostname == ${HOSTNAMEs}
 
   mongo:
     image: mongo

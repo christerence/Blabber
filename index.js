@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const fs = require("fs");
+const PromClient = require('prom-client');
 require("./models/blabs");
 
 const user = process.env.API_MONGO_USER;
@@ -24,7 +25,15 @@ app.use(
   })
 );
 
-require("./routes/api")(app);
+const BlabsGauge = new PromClient.Gauge({name: 'total_blabs_created_count', help: 'The number of blabs created'},);
+BlabsGauge.set(0);
+const ReqTimeHist = new PromClient.Histogram({
+  name: 'http_request_duration_sec',
+  help: 'Request durations for all endpoints accessed',
+});
+
+
+require("./routes/api")(app, BlabsGauge, ReqTimeHist);
 
 app.get("/healthcheck", (req, res) => {
   res.sendStatus(200);
@@ -44,6 +53,16 @@ mongoose.connect(uri, options, err => {
       console.log("App Listening to PORT " + PORT);
     });
   }
+});
+
+
+const collectDefaultMetrics = PromClient.collectDefaultMetrics;
+collectDefaultMetrics({prefix: 'api', timeout: 5000});
+
+app.get('/metrics', (req, res) => {
+  const end = ReqTimeHist.startTimer();
+  res.status(200).send(PromClient.register.metrics());
+  end();
 });
 
 

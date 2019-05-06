@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const Blab = mongoose.model("blabs");
 
-module.exports = app => {
+module.exports = (app, BlabsGauge, ReqTimeHist) => {
   app.get("/blabs", (req, res) => {
+    const end = ReqTimeHist.startTimer();
     const params = req.query;
     const timestamp = params.createdSince;
     const date = new Date();
@@ -27,9 +28,11 @@ module.exports = app => {
           res.status(200).send([]);
         });
     }
+    end();
   });
 
   app.delete("/blabs/:id", (req, res) => {
+    const end = ReqTimeHist.startTimer();
     const id = req.params.id;
     Blab.find({})
       .where("id")
@@ -40,12 +43,15 @@ module.exports = app => {
         } else {
           Blab.deleteMany({ id: id }, err => {
             res.status(200).send("Blab deleted successfully");
+            end();
           });
         }
       });
+      end();
   });
 
   app.post("/blabs", (req, res) => {
+    const end = ReqTimeHist.startTimer();
     const params = req.body;
     const author = params.author;
     const message = params.message;
@@ -60,11 +66,14 @@ module.exports = app => {
       .then(blab => {
         setTimeout(() => {
           res.status(201).send(blab);
+          BlabsGauge.inc();
         }, 2000);
       })
       .catch(err => {
         res.status(201).send({});
+        end();
       });
+    end();
   });
 
 };
